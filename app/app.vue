@@ -28,6 +28,14 @@ const usuario = ref('Usuario')
 const carritoTotal = ref(0)
 const mostrarBusqueda = ref(false)
 const busqueda = ref('')
+const isLoggedIn = ref(false) // Estado de autenticación
+
+// Manejo del tema
+const colorMode = useColorMode()
+
+const toggleTheme = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
 </script>
 
 <template>
@@ -38,20 +46,30 @@ const busqueda = ref('')
       }"
     >
       <template #left>
-        <NuxtLink to="/"> 
-          <AppLogo class="h-8 w-auto" />
-        </NuxtLink>
+        <div class="flex items-center gap-2">
+          <NuxtLink to="/"> 
+            <AppLogo class="h-8 w-auto" />
+          </NuxtLink>
+          <UButton
+            :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            aria-label="Cambiar tema"
+            @click="toggleTheme"
+          />
+        </div>
       </template>
       
-      <template #center>
+      <template #default>
         <div class="flex items-center gap-2 lg:gap-4">
           <!-- Link Promociones -->
           <UButton
             to="/offers"
             variant="ghost"
             color="neutral"
-            class="hidden lg:inline-flex"
-            size="sm"
+            class="hidden lg:inline-flex text-base font-medium"
+            size="md"
           >
             Promociones
           </UButton>
@@ -61,8 +79,8 @@ const busqueda = ref('')
             to="/menu"
             variant="ghost"
             color="neutral"
-            class="hidden lg:inline-flex"
-            size="sm"
+            class="hidden lg:inline-flex text-base font-medium"
+            size="md"
           >
             Menú
           </UButton>
@@ -95,10 +113,40 @@ const busqueda = ref('')
       
       <template #right>
         <div class="flex items-center gap-2 lg:gap-4">
-          <!-- Saludo al usuario -->
-          <span class="text-sm hidden lg:inline">
-            Hola {{ usuario }}
-          </span>
+          <UButton
+            href="tel:01419-1919"
+            target="_blank"
+            title="01419-1919"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            class="flex flex-col items-center gap-1 text-sm"
+          >
+            <span class="uppercase tracking-wide text-xs font-semibold">Llámanos</span>
+            <span class="flex items-center gap-2">
+              <UIcon name="i-lucide-phone" class="h-4 w-4" aria-hidden="true" />
+              <strong class="number-phone">01419-1919</strong>
+            </span>
+          </UButton>
+          <!-- Saludo al usuario o botón de iniciar sesión -->
+          <template v-if="isLoggedIn">
+            <span class="text-sm hidden lg:inline">
+              <span>Hola,</span>
+              <strong class="ml-1">{{ usuario }}</strong>
+            </span>
+          </template>
+          <template v-else>
+            <span class="text-sm hidden lg:inline-flex flex-col items-center text-center gap-1">
+              <span class="block">Hola,</span>
+              <NuxtLink
+                to="/auth"
+                class="inline-flex items-center gap-2 hover:underline focus-visible:underline"
+              >
+                <UIcon name="mdi:account-circle" class="h-5 w-5" aria-hidden="true" />
+                <span>Iniciar sesión</span>
+              </NuxtLink>
+            </span>
+          </template>
           
           <!-- Carrito de compras -->
           <UButton
@@ -135,12 +183,36 @@ const busqueda = ref('')
           >
             Menú
           </UButton>
+          
+          <template v-if="!isLoggedIn">
+            <div class="px-3 py-2 text-sm flex items-center gap-2">
+              <span>Hola</span>
+              <UButton
+                to="/auth"
+                variant="ghost"
+                color="neutral"
+                class="inline-flex flex-col items-center gap-1 text-center"
+              >
+                <span class="uppercase tracking-wide text-xs font-semibold">Hola,</span>
+                <span class="inline-flex items-center gap-2">
+                  <UIcon name="mdi:account-circle" class="h-5 w-5" aria-hidden="true" />
+                  Iniciar sesión
+                </span>
+              </UButton>
+            </div>
+
+          </template>
+          <template v-else>
+            <div class="px-3 py-2 text-sm">
+              Hola {{ usuario }}
+            </div>
+          </template>
         </div>
       </template>
     </UHeader>
 
     <UMain>
-      <!-- Tu contenido aquí -->
+      <NuxtPage />
     </UMain>
 
     <USeparator icon="bx:bolt-circle" />
