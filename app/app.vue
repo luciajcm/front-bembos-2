@@ -24,7 +24,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-const usuario = ref('Usuario')
+const usuario = ref('Lazheart')
 const carritoTotal = ref(0)
 const mostrarBusqueda = ref(false)
 const busqueda = ref('')
@@ -388,6 +388,84 @@ const toggleTheme = () => {
           <p class="text-sm text-muted">
             Lazheart Bemmbos • © {{ new Date().getFullYear() }}
           </p>
+        </div>
+      </template>
+
+      <template #default>
+        <div class="pagebuilder-column mt-4 w-full">
+          <div class="footer-column-content flex flex-col gap-3 sm:flex-row sm:gap-6">
+            <div class="libro-de-reclamaciones">
+              <div class="title text-center">
+                <span class="block">Libro de Reclamaciones</span>
+              </div>
+              <div class="column-content mt-1">
+                <div class="footer-link-style flex justify-center">
+                  <a
+                    href="https://www.bembos.com.pe/bembos-reclamaciones/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block"
+                  >
+                    <img
+                      src="https://www.bembos.com.pe/static/version1762780857/frontend/Ngr/bembos/es_PE/images/libro-de-reclamaciones.jpg"
+                      alt="Libro de Reclamaciones"
+                      width="88"
+                      height="22"
+                      loading="lazy"
+                      class="mx-auto"
+                    >
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer-payment">
+              <div class="title text-center">
+                <span class="block">Métodos de Pago</span>
+              </div>
+              <div class="column-content mt-1">
+                <ul class="links inline-sections">
+                  <li>
+                    <img
+                      src="https://www.bembos.com.pe/media/wysiwyg/bembos/pagos.png"
+                      alt="Métodos de Pago"
+                      loading="lazy"
+                      width="156"
+                      height="37"
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="footer-payment apps">
+              <div class="title text-center">
+                <span class="block">Bembos App</span>
+              </div>
+              <div class="column-content mt-1">
+                <ul class="links inline-sections flex gap-2">
+                  <li>
+                    <img
+                      src="https://www.bembos.com.pe/media/wysiwyg/bembos/google-play.png"
+                      alt="Google Play"
+                      loading="lazy"
+                      width="85"
+                      height="25"
+                    >
+                  </li>
+                  <li>
+                    <img
+                      src="https://www.bembos.com.pe/media/wysiwyg/bembos/app-store.png"
+                      alt="App Store"
+                      loading="lazy"
+                      width="85"
+                      height="25"
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
 
