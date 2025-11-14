@@ -71,7 +71,7 @@ const onSubmit = async (payload?: FormSubmitEvent<Schema>): Promise<void> => {
   const email = typeof form.email === 'string' ? form.email : ''
   const password = typeof form.password === 'string' ? form.password : ''
   const username = typeof form.username === 'string' ? form.username : (email.split('@')[0] ?? '')
-  const role = 'user'
+  const role = 'USER'
 
   toast.add({ title: 'Register', description: 'Creating account...' })
 

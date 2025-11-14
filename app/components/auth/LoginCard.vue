@@ -46,11 +46,14 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     form = p as Record<string, unknown>
   }
 
+  // Ensure tenantId is always present in the outgoing payload
+  form.tenantId = typeof form.tenantId === 'string' ? form.tenantId : DEFAULT_TENANT
+
   try {
     // backend expects tenantId and a field named `email` containing either email or username
     const identifier = typeof form.identifier === 'string' ? form.identifier : undefined
     const res = await login({
-      tenantId: DEFAULT_TENANT,
+      tenantId: typeof form.tenantId === 'string' ? form.tenantId : DEFAULT_TENANT,
       email: identifier,
       password: typeof form.password === 'string' ? form.password : undefined
     })

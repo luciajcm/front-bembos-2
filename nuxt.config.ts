@@ -1,4 +1,7 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { config as loadDotenv } from 'dotenv'
+
+loadDotenv()
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -14,7 +17,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // Use environment variables to set the API base URL. Update these in your .env or deployment.
-      apiAuthBase: process.env.NUXT_PUBLIC_API_AUTH_BASE || process.env.VITE_API_AUTH_BASE || ''
+      apiAuthBase: process.env.NUXT_PUBLIC_API_AUTH_BASE || ''
     }
   },
 

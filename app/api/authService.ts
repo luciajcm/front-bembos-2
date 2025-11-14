@@ -25,7 +25,7 @@ export async function login(payload: LoginPayload) {
   try {
     const config = useRuntimeConfig()
     const base = String(config.public?.apiAuthBase ?? '').replace(/\/+$/, '')
-    if (!base) throw new Error('API base not configured (runtimeConfig.public.apiAuthBase)')
+    if (!base) throw new Error('API base not configured (runtimeConfig.public.apiAuthBase).\nSet NUXT_PUBLIC_API_AUTH_BASE in your environment or update runtimeConfig in nuxt.config.ts')
     const url = base + '/auth/login'
     return await $fetch(url, { method: 'POST', body: payload })
   } catch (err) {
@@ -37,7 +37,7 @@ export async function register(payload: RegisterPayload) {
   try {
     const config = useRuntimeConfig()
     const base = String(config.public?.apiAuthBase ?? '').replace(/\/+$/, '')
-    if (!base) throw new Error('API base not configured (runtimeConfig.public.apiAuthBase)')
+    if (!base) throw new Error('API base not configured (runtimeConfig.public.apiAuthBase).\nSet NUXT_PUBLIC_API_AUTH_BASE in your environment or update runtimeConfig in nuxt.config.ts')
     const url = base + '/auth/register'
     return await $fetch(url, { method: 'POST', body: payload })
   } catch (err) {
