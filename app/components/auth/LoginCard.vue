@@ -6,12 +6,14 @@ import { login } from '../../api/authService'
 
 const toast = useToast()
 
+const DEFAULT_TENANT = 'TENANT#BEMBOS'
+
 const fields: AuthFormField[] = [
   {
-    name: 'email',
-    type: 'email',
-    label: 'Email',
-    placeholder: 'Enter your email',
+    name: 'identifier',
+    type: 'text',
+    label: 'Email or Username',
+    placeholder: 'Enter your email or username',
     required: true
   },
   {
@@ -29,7 +31,7 @@ const fields: AuthFormField[] = [
 ]
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
+  identifier: z.string().min(1, 'Required'),
   password: z.string().min(8, 'Must be at least 8 characters')
 })
 
@@ -45,13 +47,40 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   }
 
   try {
-    await login({
-      email: typeof form.email === 'string' ? form.email : undefined,
+    // backend expects tenantId and a field named `email` containing either email or username
+    const identifier = typeof form.identifier === 'string' ? form.identifier : undefined
+    const res = await login({
+      tenantId: DEFAULT_TENANT,
+      email: identifier,
       password: typeof form.password === 'string' ? form.password : undefined
     })
+
+    // Extract token defensively from response shape
+    let token: string | undefined
+    if (res && typeof res === 'object') {
+      const r = res as Record<string, unknown>
+      if (typeof r.token === 'string') token = r.token
+      else if (r.data && typeof r.data === 'object') {
+        const d = r.data as Record<string, unknown>
+        if (typeof d.token === 'string') token = d.token
+      }
+    }
+
+    if (token) {
+      // Store token in cookie (client-side). For httpOnly cookie prefer backend Set-Cookie.
+      const authCookie = useCookie('auth_token', {
+        path: '/',
+        sameSite: 'lax',
+        secure: true,
+        maxAge: 60 * 60 // 1 hour
+      })
+      authCookie.value = token
+    }
+
     toast.add({ title: 'Login successful', description: 'You are now logged in.' })
-    // TODO: handle token/session (store in pinia/cookie) and redirect if needed
-    console.log('Login success', form.email)
+    // redirect to home
+    navigateTo('/')
+    console.log('Login success', identifier)
   } catch (errUnknown) {
     const errObj = errUnknown as { body?: { message?: string }, message?: string }
     const message = errObj.body?.message ?? errObj.message ?? 'Login failed'

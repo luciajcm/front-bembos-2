@@ -1,4 +1,4 @@
-export type LoginPayload = { username?: string, email?: string, password?: string }
+export type LoginPayload = { tenantId?: string, username?: string, email?: string, password?: string }
 export type RegisterPayload = Record<string, unknown>
 
 function normalizeAndThrow(err: unknown) {
