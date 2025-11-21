@@ -1,34 +1,43 @@
-name: ci
+name: CI
 
-on: push
+on:
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [22]
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Install npm
-        uses: npm/action-setup@v4
-
-      - name: Install node
-        uses: actions/setup-node@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Lint
-        run: npm run lint
+        run: npm run lint --if-present
 
       - name: Typecheck
-        run: npm run typecheck
+        run: npm run typecheck --if-present
+
+      - name: Build Nuxt
+        run: npm run build
+
+      # Nuxt produce .output (SSR) o dist/ (modo generate)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuxt-build
+          path: |
+            .output/
+            dist/
+          retention-days: 7
