@@ -50,12 +50,23 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   form.tenantId = typeof form.tenantId === 'string' ? form.tenantId : DEFAULT_TENANT
 
   try {
-    const identifier = typeof form.identifier === 'string' ? form.identifier : undefined
-    const res = await login({
+    const rawIdentifier = typeof form.identifier === 'string' ? form.identifier.trim() : ''
+    const identifier = rawIdentifier.length ? rawIdentifier : undefined
+
+    // Detect if identifier is an email or username
+    const isEmail = identifier ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) : false
+
+    const payload: Record<string, unknown> = {
       tenantId: typeof form.tenantId === 'string' ? form.tenantId : DEFAULT_TENANT,
-      email: identifier,
       password: typeof form.password === 'string' ? form.password : undefined
-    })
+    }
+
+    if (identifier) {
+      if (isEmail) payload.email = identifier.toLowerCase()
+      else payload.username = identifier.toLowerCase()
+    }
+
+    const res = await login(payload)
 
     // if login succeeded navigate
     if (res) {

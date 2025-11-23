@@ -1,10 +1,9 @@
 <template>
-  <div>
-    <h1>Menú</h1>
+  <div class="menu-wrapper">
+    <MenuList />
   </div>
 </template>
 
 <script setup lang="ts">
-// Página de menú
+import MenuList from '../components/MenuList.vue'
 </script>
-

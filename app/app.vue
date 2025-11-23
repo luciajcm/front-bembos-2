@@ -1,7 +1,11 @@
 <script setup>
+const { theme } = useTheme()
+const themeColor = computed(() => theme.value === 'dark' ? '#0d1fb3' : '#ffd600')
+
 useHead({
   meta: [
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'theme-color', content: () => themeColor.value }
   ],
   link: [
     { rel: 'icon', href: 'https://www.bembos.com.pe/media/favicon/stores/9/favicon-bembos.png' }
@@ -27,18 +31,12 @@ useSeoMeta({
 const carritoTotal = ref(0)
 const mostrarBusqueda = ref(false)
 const busqueda = ref('')
-
-// Manejo del tema
-const colorMode = useColorMode()
-
-const toggleTheme = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-}
 </script>
 
 <template>
   <UApp>
     <UHeader
+      class="bembos-header"
       :ui="{
         center: 'flex items-center'
       }"
@@ -48,14 +46,7 @@ const toggleTheme = () => {
           <NuxtLink to="/">
             <AppLogo class="h-8 w-auto" />
           </NuxtLink>
-          <UButton
-            :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            aria-label="Cambiar tema"
-            @click="toggleTheme"
-          />
+          <ThemeToggle />
         </div>
       </template>
 
@@ -262,9 +253,7 @@ const toggleTheme = () => {
       <NuxtPage />
     </UMain>
 
-    <USeparator icon="bx:bolt-circle" />
-
-    <UFooter>
+    <UFooter class="bembos-footer">
       <template #left>
         <div class="flex flex-col items-start gap-3">
           <AppLogo class="h-8 w-auto" />
