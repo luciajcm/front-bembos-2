@@ -8,7 +8,7 @@
   --color-primary: #ffd600; /* amarillo protagonista */
   --color-secondary: #ffffff; /* blanco para superficies y botones */
   --color-tertiary-1: #e31837; /* rojo vibrante */
-  --color-tertiary-2: #0f4cff; /* azul eléctrico */
+  --color-tertiary-2: #0f4cff; /* azul eléctrico (light theme) */
   --color-bg: #fff9ed;
   --color-bg-alt: #fff0c9;
   --color-surface: #ffffff;
@@ -17,8 +17,10 @@
   --color-muted: #5f6170;
   --color-border: rgba(17, 0, 207, 0.08);
   --color-card-shadow: 0 18px 50px rgba(17, 0, 207, 0.08);
-  --color-navbar: #ffffff;
-  --color-navbar-text: #0f1f7a;
+  /* softer brand blue for navbar in light theme */
+  /* light theme: navbar/footer use brand yellow for high contrast */
+  --color-navbar: #ffd600;
+  --color-navbar-text: #1f1a00;
   --color-navbar-border: #ffd600;
   --color-link: #0f4cff;
   --color-link-hover: #e31837;
@@ -30,7 +32,7 @@
 :root[data-theme='dark'],
 body.theme-dark {
   color-scheme: dark;
-  --color-primary: #0d1fb3; /* azul profundo protagonista */
+  --color-primary: #0000FF; /* azul profundo protagonista (normalized to brand blue) */
   --color-secondary: #ffffff;
   --color-tertiary-1: #ffd600; /* amarillo contraste */
   --color-tertiary-2: #ff4d4f; /* rojo intenso */
@@ -42,8 +44,13 @@ body.theme-dark {
   --color-muted: #94a5da;
   --color-border: rgba(255, 255, 255, 0.14);
   --color-card-shadow: 0 25px 60px rgba(2, 4, 24, 0.85);
-  --color-navbar: #081237;
-  --color-navbar-text: #f7f8ff;
+  /* darker, low-glare blue for navbar in dark theme */
+  /* dark theme: navbar/footer use pure brand blue */
+  --color-navbar: #0000FF;
+  --color-navbar-text: #ffffff;
+  --color-primary: #0000FF; /* ensure primary blue in dark uses #0000FF */
+  --color-tertiary-2: #0000FF;
+  --color-link: #0000FF;
   --color-navbar-border: #ffd600;
   --color-link: #ffd600;
   --color-link-hover: #ff4d4f;
@@ -302,4 +309,159 @@ input[type='checkbox']:focus {
   input[type='checkbox'] {
     transition: none !important;
   }
+}
+
+/* Custom checkbox inside auth cards: consistent checkmark and theme-aware color */
+.auth-card input[type='checkbox'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 0.25rem;
+  border: 2px solid color-mix(in srgb, var(--color-muted) 36%, transparent);
+  background: var(--color-surface);
+  display: inline-grid;
+  place-items: center;
+  transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s ease;
+  margin-right: 0.5rem;
+}
+
+.auth-card input[type='checkbox']::after {
+  content: '';
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70% 70%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>");
+  transform: scale(0);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  opacity: 0;
+  box-sizing: content-box;
+  color: var(--color-cta-text);
+}
+
+.auth-card input[type='checkbox']:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.auth-card input[type='checkbox']:checked::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* More specific selector to override component defaults if needed */
+.auth-card .u-checkbox input[type='checkbox']::after,
+.auth-card .u-auth-form input[type='checkbox']::after {
+  color: var(--color-cta-text) !important;
+}
+
+/* Force explicit SVG stroke colors for better contrast in each theme */
+body:not(.theme-dark) .auth-card input[type='checkbox']::after {
+  /* black stroke for light theme */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>") !important;
+  color: #000 !important;
+}
+
+body.theme-dark .auth-card input[type='checkbox']::after {
+  /* white stroke for dark theme */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>") !important;
+  color: #fff !important;
+}
+
+/* Target the lucide check icon used by the checkbox indicator from @nuxt/ui */
+.auth-card .i-lucide-check,
+.auth-card .i-lucide-check svg {
+  color: var(--color-cta-text) !important;
+  stroke: currentColor !important;
+}
+
+/* Ensure strong contrast in light theme */
+body:not(.theme-dark) .auth-card .i-lucide-check,
+body:not(.theme-dark) .auth-card .i-lucide-check svg {
+  color: #000 !important;
+  stroke: #000 !important;
+}
+
+/* Ensure check is white in dark theme */
+body.theme-dark .auth-card .i-lucide-check,
+body.theme-dark .auth-card .i-lucide-check svg {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+
+.auth-card input[type='checkbox']:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+/* Make primary action inside auth cards more prominent in light and dark */
+.auth-card button[type='submit'],
+.auth-card .u-button--primary,
+.auth-card .u-auth-form button[type='submit'] {
+  background: var(--color-primary) !important;
+  color: var(--color-cta-text) !important;
+  border-radius: 999px !important;
+  padding: 0.7rem 1.6rem !important;
+  font-weight: 700 !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--color-primary) 28%, transparent) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
+}
+
+.auth-card button[type='submit']:hover,
+.auth-card .u-button--primary:hover,
+.auth-card .u-auth-form button[type='submit']:hover {
+  transform: translateY(-2px) !important;
+  background: var(--color-tertiary-1) !important; /* rojo vibrante on hover for contrast */
+  color: var(--color-secondary) !important;
+}
+
+/* Ensure disabled state is readable */
+.auth-card button[disabled],
+.auth-card button:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* Background for auth page using assets/media image */
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../media/bemboslocallarco.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* default gentle dark overlay to preserve contrast if theme not detected */
+  background: linear-gradient(180deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.52) 100%);
+  z-index: 0;
+}
+
+/* Light theme: warm yellowish overlay for brand aesthetic */
+body:not(.theme-dark) .auth-page::before,
+:root:not([data-theme='dark']) .auth-page::before {
+  background: linear-gradient(180deg, rgba(255,214,0,0.26) 0%, rgba(255,214,0,0.16) 35%, rgba(0,0,0,0.14) 100%);
+}
+
+/* Dark theme: subtle blue overlay to match dark palette */
+body.theme-dark .auth-page::before,
+:root[data-theme='dark'] .auth-page::before {
+  background: linear-gradient(180deg, rgba(15,76,255,0.36) 0%, rgba(15,76,255,0.18) 35%, rgba(0,0,0,0.68) 100%);
+}
+
+/* Ensure content sits above the overlay */
+.auth-page .auth-content {
+  position: relative;
+  z-index: 10;
+  padding: 1rem;
 }

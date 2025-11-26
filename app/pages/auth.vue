@@ -1,6 +1,8 @@
 <template>
-  <div class="flex min-h-screen items-center justify-center">
-    <AuthSwitcher />
+  <div class="auth-page flex min-h-screen items-center justify-center">
+    <div class="auth-content z-10 w-full">
+      <AuthSwitcher />
+    </div>
   </div>
 </template>
 

@@ -1,6 +1,9 @@
 <script setup>
 const { theme } = useTheme()
-const themeColor = computed(() => theme.value === 'dark' ? '#0d1fb3' : '#ffd600')
+import logo from '~/assets/media/bembos2.png'
+// themeColor controls the browser address-bar / theme meta color.
+// Use the navbar color for each theme so the UI feels consistent when toggling.
+const themeColor = computed(() => theme.value === 'dark' ? '#0000FF' : '#ffd600')
 
 useHead({
   meta: [
@@ -43,8 +46,8 @@ const busqueda = ref('')
     >
       <template #left>
         <div class="flex items-center gap-1 max-w-fit">
-          <NuxtLink to="/">
-            <AppLogo class="h-8 w-auto" />
+          <NuxtLink to="/" class="logo-link">
+            <img :src="logo" alt="Bembos 2" class="h-8 w-auto" />
           </NuxtLink>
           <ThemeToggle />
         </div>
@@ -255,8 +258,13 @@ const busqueda = ref('')
 
     <UFooter class="bembos-footer">
       <template #left>
+
         <div class="flex flex-col items-start gap-3">
-          <AppLogo class="h-8 w-auto" />
+          <div class="footer-logo">
+            <NuxtLink to="/" class="logo-link">
+              <img :src="logo" alt="Bembos 2" class="h-8 w-auto" />
+            </NuxtLink>
+          </div>
 
           <!-- Social links debajo del logo -->
           <div class="mt-1">

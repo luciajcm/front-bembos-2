@@ -28,10 +28,10 @@ const palettes: Record<ThemeName, ThemePalette> = {
     muted: '#6b6b6b'
   },
   dark: {
-    primary: '#0c1fb3',
+    primary: '#0000FF',
     secondary: '#ffffff',
     tertiaryOne: '#ffd600',
-    tertiaryTwo: '#ff4d4f',
+    tertiaryTwo: '#0000FF',
     background: '#05091f',
     surface: '#0f1a3d',
     text: '#f7f8ff',

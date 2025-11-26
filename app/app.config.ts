@@ -1,7 +1,7 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: '#1100cf', // Bembos blue
+      primary: '#0000FF', // Bembos blue (updated)
       secondary: '#ffb500', // Bembos yellow
       accent: '#ff000f', // Bembos red
       neutral: '#232323', // dark
