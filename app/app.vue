@@ -1,7 +1,34 @@
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 const { theme } = useTheme()
 import { useAuth } from '~/composables/useAuth'
-const { isLoggedIn, usuario } = useAuth()
+const { isLoggedIn, usuario, logout } = useAuth()
+
+const userMenuOpen = ref(false)
+const userMenuRef = ref(null)
+
+function toggleUserMenu() {
+  userMenuOpen.value = !userMenuOpen.value
+}
+
+function handleLogout() {
+  userMenuOpen.value = false
+  logout()
+}
+
+function onDocClick(e) {
+  const el = userMenuRef.value
+  if (!el) return
+  if (!el.contains(e.target)) userMenuOpen.value = false
+}
+
+onMounted(() => {
+  document.addEventListener('click', onDocClick)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocClick)
+})
 import logo from '~/assets/media/bembos2.png'
 import AppLogo from '~/components/AppLogo.vue'
 // themeColor controls the browser address-bar / theme meta color.
@@ -149,10 +176,31 @@ const busqueda = ref('')
           </UButton>
 
           <template v-if="isLoggedIn">
-            <span class="text-sm hidden lg:inline whitespace-nowrap">
-              <span>Hola,</span>
-              <strong class="ml-1">{{ usuario }}</strong>
-            </span>
+            <div class="relative" ref="userMenuRef">
+              <button
+                @click="toggleUserMenu"
+                class="hidden lg:inline-flex items-center gap-2 text-sm hover:underline focus:outline-none"
+                aria-haspopup="true"
+                :aria-expanded="userMenuOpen"
+              >
+                <span class="flex items-center gap-1 whitespace-nowrap">
+                  <span class="text-sm">Hola,</span>
+                  <strong class="ml-1">{{ usuario }}</strong>
+                </span>
+                <UIcon name="i-lucide-chevron-down" class="h-4 w-4" />
+              </button>
+
+              <transition name="fade">
+                <div
+                  v-show="userMenuOpen"
+                  class="user-menu absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-800 text-sm rounded-md shadow-lg ring-1 ring-black/5 z-50"
+                >
+                  <NuxtLink to="/order" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700">Mis Pedidos</NuxtLink>
+                  <NuxtLink to="/me" class="block px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700">Mi cuenta</NuxtLink>
+                  <button @click="handleLogout" class="w-full text-left px-4 py-2 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-600">Cerrar sesión</button>
+                </div>
+              </transition>
+            </div>
           </template>
           <template v-else>
             <!-- Mostrar en línea en pantallas grandes para evitar saltos/solapamientos -->
@@ -252,8 +300,10 @@ const busqueda = ref('')
             </div>
           </template>
           <template v-else>
-            <div class="px-3 py-2 text-sm">
-              Hola {{ usuario }}
+            <div class="px-3 py-2 text-sm flex flex-col gap-2">
+              <NuxtLink to="/order" class="block px-3 py-2 rounded hover:bg-neutral-100">Mis Pedidos</NuxtLink>
+              <NuxtLink to="/me" class="block px-3 py-2 rounded hover:bg-neutral-100">Mi cuenta</NuxtLink>
+              <button @click="handleLogout" class="w-full text-left px-3 py-2 rounded bg-red-50 text-red-600 hover:bg-red-100">Cerrar sesión</button>
             </div>
           </template>
         </div>
@@ -507,4 +557,13 @@ const busqueda = ref('')
     opacity: 1;
   }
 }
+
+/* User menu fade */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 150ms ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.user-menu { min-width: 12rem; }
 </style>
