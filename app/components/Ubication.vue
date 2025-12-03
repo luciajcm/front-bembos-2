@@ -5,7 +5,6 @@
         class="store-selector-link-bold action secondary change-direction flex items-center justify-between gap-4 py-2"
         href="#"
         :style="selectedStyle"
-        @click.prevent="requestLocation"
       >
         <div class="flex items-center gap-3">
           <UIcon
@@ -37,27 +36,11 @@
 
         <div class="actions flex items-center gap-2">
           <UButton
-            v-if="!coords && status !== 'loading'"
-            size="sm"
-            variant="ghost"
-            color="primary"
-            @click.prevent="requestLocation"
-          >Permitir</UButton>
-          <UButton
-            v-if="coords"
             size="sm"
             variant="outline"
             color="primary"
-            :href="mapsLink"
-            target="_blank"
-          >Abrir</UButton>
-          <UButton
-            v-if="coords"
-            size="sm"
-            variant="ghost"
-            color="neutral"
-            @click.prevent="copyCoords"
-          >Copiar</UButton>
+            @click.prevent.stop="requestLocation"
+          >Recargar ubicación</UButton>
         </div>
       </a>
     </div>
@@ -73,16 +56,18 @@ const { status, coords, requestLocation, mapsLink, copyCoords } = useLocation()
 const { isDark, palette } = useTheme()
 
 const stripClasses = computed(() => {
+  // use slightly softer background in dark mode, removing heavy contrast
   return [
-    'header-bottom-links w-full shadow-sm rounded-md',
-    isDark.value ? 'bg-neutral-900 text-(--color-text) border border-neutral-800' : 'bg-(--color-surface) text-(--color-text)'
+    'header-bottom-links w-full rounded-md',
+    isDark.value ? 'bg-neutral-800 text-(--color-text) border border-neutral-700' : 'bg-(--color-surface) text-(--color-text)'
   ]
 })
 
 const selectedStyle = computed(() => ({
   'color': palette.value.text,
-  // highlight primary in selected name
-  '--primary-color': palette.value.primary
+  // ensure we do NOT force primary/yellow highlight here; keep neutral vars
+  '--primary-color': palette.value.primary,
+  'boxShadow': 'none'
 } as Record<string, string>))
 </script>
 

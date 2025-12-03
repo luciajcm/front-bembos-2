@@ -1,8 +1,7 @@
 <template>
   <section class="menu-list container mx-auto py-12 space-y-8">
     <header class="menu-header">
-      <span class="pill">
-        <UIcon name="i-lucide-utensils" />
+      <span class="pill" :style="pillStyle">
         {{ pillText }}
       </span>
       <h1 class="section-title">
@@ -97,6 +96,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useCart } from '~/composables/useCart'
 import DishCard from './DishCard.vue'
 import { getMenu } from '../api/restaurantService'
+import { useTheme } from '~/composables/useTheme'
 
 const props = defineProps({
   onlyOffers: { type: Boolean, default: false },
@@ -134,6 +134,15 @@ const emptySub = computed(() => (props.onlyOffers ? 'Vuelve más tarde, por ahor
 const pillText = computed(() => (props.onlyOffers ? 'Ofertas' : 'Menú oficial'))
 const titleText = computed(() => props.title)
 const subtitleText = computed(() => props.subtitle)
+
+const { palette } = useTheme()
+
+const pillStyle = computed(() => ({
+  background: palette.value.surface || 'transparent',
+  color: palette.value.text || 'inherit',
+  boxShadow: 'none',
+  border: '1px solid transparent'
+} as Record<string, string>))
 
 function extractItems(resp: unknown) {
   if (!resp) return { items: [], nextKey: null }
