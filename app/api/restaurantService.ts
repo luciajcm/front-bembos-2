@@ -35,10 +35,18 @@ export async function createKitchen(payload: Record<string, unknown>) {
   return await $fetch(url, { method: 'POST', body: payload })
 }
 
-// --- ORDERS ---
-export async function createOrder(payload: Record<string, unknown>) {
-  const url = `${getBaseUrl()}/orders`
+// --- WORKERS / STAFF ---
+export async function createWorker(payload: Record<string, unknown>) {
+  const url = `${getBaseUrl()}/admin/workers`
   return await $fetch(url, { method: 'POST', body: payload })
+}
+
+// --- ORDERS ---
+export async function createOrder(payload: Record<string, unknown>, opts?: { token?: string }) {
+  const url = `${getBaseUrl()}/orders`
+  const headers: Record<string, string> = {}
+  if (opts && opts.token) headers['Authorization'] = `Bearer ${opts.token}`
+  return await $fetch(url, { method: 'POST', body: payload, headers })
 }
 
 export async function getOrders() {

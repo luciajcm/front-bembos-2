@@ -1,10 +1,19 @@
-<script setup>
-import { onMounted } from 'vue'
+<script setup lang="ts">
+import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
+import DishCreate from '~/components/admin/dishCreate.vue'
+import LocalNew from '~/components/admin/localNew.vue'
+import WorkerCard from '~/components/admin/workerCard.vue'
 
 const router = useRouter()
 const { user, isLoggedIn, logout, usuario } = useAuth()
+const isAdmin = computed(() => {
+  const u = (user as any)?.value ?? user
+  // support both raw object or ref (defensive)
+  const roleVal = u && (u.role || (u as any).role) ? String((u.role || (u as any).role)).toLowerCase() : ''
+  return roleVal === 'admin'
+})
 
 onMounted(() => {
   if (!isLoggedIn.value) {
@@ -27,41 +36,86 @@ function handleLogout() {
           {{ (usuario || 'U').charAt(0).toUpperCase() }}
         </div>
         <div>
-          <h1 class="text-2xl font-semibold">Perfil de usuario</h1>
-          <p class="text-sm text-muted">Información de tu sesión</p>
+          <h1 class="text-2xl font-semibold">
+            Perfil de usuario
+          </h1>
+          <p class="text-sm text-muted">
+            Información de tu sesión
+          </p>
         </div>
       </div>
 
       <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="p-4 rounded border border-neutral-100 dark:border-neutral-800">
-          <div class="text-xs uppercase text-neutral-500">Usuario</div>
-          <div class="mt-1 font-medium">{{ usuario }}</div>
+          <div class="text-xs uppercase text-neutral-500">
+            Usuario
+          </div>
+          <div class="mt-1 font-medium">
+            {{ usuario }}
+          </div>
         </div>
 
         <div class="p-4 rounded border border-neutral-100 dark:border-neutral-800">
-          <div class="text-xs uppercase text-neutral-500">Email</div>
-          <div class="mt-1 font-medium">{{ user && (user.email || '-') }}</div>
+          <div class="text-xs uppercase text-neutral-500">
+            Email
+          </div>
+          <div class="mt-1 font-medium">
+            {{ user && (user.email || '-') }}
+          </div>
         </div>
 
         <div class="p-4 rounded border border-neutral-100 dark:border-neutral-800">
-          <div class="text-xs uppercase text-neutral-500">Role</div>
-          <div class="mt-1 font-medium">{{ user && (user.role || '-') }}</div>
+          <div class="text-xs uppercase text-neutral-500">
+            Role
+          </div>
+          <div class="mt-1 font-medium">
+            {{ user && (user.role || '-') }}
+          </div>
         </div>
 
         <div class="p-4 rounded border border-neutral-100 dark:border-neutral-800">
-          <div class="text-xs uppercase text-neutral-500">User ID</div>
-          <div class="mt-1 font-medium break-all">{{ user && (user.userId || '-') }}</div>
-        </div>
-
-        <div class="p-4 rounded border border-neutral-100 dark:border-neutral-800 sm:col-span-2">
-          <div class="text-xs uppercase text-neutral-500">Tenant</div>
-          <div class="mt-1 font-medium">{{ user && (user.tenantId || '-') }}</div>
+          <div class="text-xs uppercase text-neutral-500">
+            User ID
+          </div>
+          <div class="mt-1 font-medium break-all">
+            {{ user && (user.userId || '-') }}
+          </div>
         </div>
       </div>
 
       <div class="mt-6 flex gap-3">
-        <NuxtLink to="/order" class="inline-flex items-center px-4 py-2 rounded bg-amber-500 text-white hover:bg-amber-600">Ver mis pedidos</NuxtLink>
-        <button @click="handleLogout" class="inline-flex items-center px-4 py-2 rounded border border-neutral-200 dark:border-neutral-800">Cerrar sesión</button>
+        <NuxtLink
+          to="/order"
+          class="inline-flex items-center px-4 py-2 rounded bg-amber-500 text-white hover:bg-amber-600"
+        >Ver mis pedidos</NuxtLink>
+        <button
+          class="inline-flex items-center px-4 py-2 rounded border border-neutral-200 dark:border-neutral-800"
+          @click="handleLogout"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+
+    <div
+      v-if="isAdmin"
+      class="max-w-4xl mx-auto px-4 py-6"
+    >
+      <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 mt-6">
+        <h2 class="text-xl font-semibold mb-4">
+          Herramientas de administrador
+        </h2>
+        <div class="grid gap-4 md:grid-cols-3">
+          <div>
+            <WorkerCard />
+          </div>
+          <div>
+            <DishCreate />
+          </div>
+          <div>
+            <LocalNew />
+          </div>
+        </div>
       </div>
     </div>
   </div>
