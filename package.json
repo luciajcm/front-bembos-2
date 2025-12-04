@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck"
+    "generate": "nuxt generate"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.71",
